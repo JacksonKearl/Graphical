@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5FF797441CC4C7C100E59206 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF797431CC4C7C100E59206 /* main.cpp */; };
+		5FF797571CC4CA1900E59206 /* ccc_shap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF797521CC4CA1900E59206 /* ccc_shap.cpp */; };
+		5FF797581CC4CA1900E59206 /* ccc_x11.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FF797551CC4CA1900E59206 /* ccc_x11.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,12 @@
 /* Begin PBXFileReference section */
 		5FF797401CC4C7C100E59206 /* Graphical */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Graphical; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FF797431CC4C7C100E59206 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		5FF797521CC4CA1900E59206 /* ccc_shap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ccc_shap.cpp; sourceTree = "<group>"; };
+		5FF797531CC4CA1900E59206 /* ccc_shap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccc_shap.h; sourceTree = "<group>"; };
+		5FF797541CC4CA1900E59206 /* ccc_win.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccc_win.h; sourceTree = "<group>"; };
+		5FF797551CC4CA1900E59206 /* ccc_x11.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ccc_x11.cpp; sourceTree = "<group>"; };
+		5FF797561CC4CA1900E59206 /* ccc_x11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccc_x11.h; sourceTree = "<group>"; };
+		5FF797591CC4CA3000E59206 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lib; path = ../../../../../opt/X11/lib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +65,12 @@
 		5FF797421CC4C7C100E59206 /* Graphical */ = {
 			isa = PBXGroup;
 			children = (
+				5FF797591CC4CA3000E59206 /* lib */,
+				5FF797521CC4CA1900E59206 /* ccc_shap.cpp */,
+				5FF797531CC4CA1900E59206 /* ccc_shap.h */,
+				5FF797541CC4CA1900E59206 /* ccc_win.h */,
+				5FF797551CC4CA1900E59206 /* ccc_x11.cpp */,
+				5FF797561CC4CA1900E59206 /* ccc_x11.h */,
 				5FF797431CC4C7C100E59206 /* main.cpp */,
 			);
 			path = Graphical;
@@ -119,6 +133,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5FF797441CC4C7C100E59206 /* main.cpp in Sources */,
+				5FF797581CC4CA1900E59206 /* ccc_x11.cpp in Sources */,
+				5FF797571CC4CA1900E59206 /* ccc_shap.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +225,17 @@
 		5FF797481CC4C7C100E59206 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					/opt/X11/lib/,
+					/opt/X11/include,
+					X11,
+				);
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				OTHER_LDFLAGS = (
+					"-I/usr/X11R6/include",
+					"-L/usr/X11R6/lib",
+					"-lX11",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -216,6 +243,17 @@
 		5FF797491CC4C7C100E59206 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					/opt/X11/lib/,
+					/opt/X11/include,
+					X11,
+				);
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				OTHER_LDFLAGS = (
+					"-I/usr/X11R6/include",
+					"-L/usr/X11R6/lib",
+					"-lX11",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

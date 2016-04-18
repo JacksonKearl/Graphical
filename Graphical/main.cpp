@@ -2,14 +2,19 @@
 //  main.cpp
 //  Graphical
 //
-//  Created by Jackson Kearl on 4/18/16.
-//  Copyright © 2016 Jackson Kearl. All rights reserved.
+//  XCode project supporting Horstaman Graphics Library
+//
+//  Modified for OSX/Xcode by Jackson Kearl on 4/18/16.
+//
+//  MIT Licensed... https://opensource.org/licenses/MIT
 //
 
-#include <iostream>
+#include "ccc_win.h"
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+int ccc_win_main(){
+    //circle.cpp
+    Point p(0,0);
+    cwin << p << Circle(p,2.5);
     return 0;
+
 }
