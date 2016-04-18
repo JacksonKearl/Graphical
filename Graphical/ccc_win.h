@@ -1,13 +1,13 @@
 #include "ccc_shap.h"
 
 #if defined(_MSC_VER)
-   #define CCC_MSW
+#define CCC_MSW
 #endif
 #if defined(_WINDOWS_) || defined (_Windows) || defined(WINVER) || defined(__WIN32__)
-   #define CCC_MSW
+#define CCC_MSW
 #endif
 #if defined(__GNUC__) && !defined(CCC_MSW)
-   #define CCC_X11
+#define CCC_X11
 #endif
 
 #if defined(CCC_ASC)

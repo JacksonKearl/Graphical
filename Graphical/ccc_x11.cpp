@@ -36,14 +36,14 @@ GraphicWindow cwin;
 /**************************************************************************/
 
 GraphicWindow::GraphicWindow()
-:  _user_xmin(DEFAULT_XMIN), _user_ymin(DEFAULT_YMIN), 
+:  _user_xmin(DEFAULT_XMIN), _user_ymin(DEFAULT_YMIN),
    _user_xmax(DEFAULT_XMAX), _user_ymax(DEFAULT_YMAX),
    _disp_xmax(DEF_WIDTH), _disp_ymax(DEF_HEIGHT)
 {
 }
 
 void GraphicWindow::open(Display* d, Window w)
-{  
+{
    display = d;
    win = w;
    screen_num = DefaultScreen(display);
@@ -70,7 +70,7 @@ void GraphicWindow::open(Display* d, Window w)
    // sets the rop mode, using Copy for the user prompts
    XSetFunction(display, xgc, GXcopy /*0x3 COPY*/);
 
-   _ppm = XCreatePixmap(display, win, DEF_WIDTH, DEF_HEIGHT, 
+   _ppm = XCreatePixmap(display, win, DEF_WIDTH, DEF_HEIGHT,
       DefaultDepth(display, screen_num));
 
    clear();
@@ -83,7 +83,7 @@ void GraphicWindow::close()
 }
 
 void GraphicWindow::repaint()
-{  
+{
    XCopyArea(display, _ppm, win, xgc, 0, 0, DEF_WIDTH, DEF_HEIGHT, 0, 0);
 }
 
@@ -102,7 +102,7 @@ void GraphicWindow::clear()
 
 void GraphicWindow::coord(double xmin, double ymin,
    double xmax, double ymax)
-{  
+{
    _user_xmin = xmin;
    _user_xmax = xmax;
    _user_ymin = ymin;
@@ -110,37 +110,37 @@ void GraphicWindow::coord(double xmin, double ymin,
 }
 
 int GraphicWindow::user_to_disp_x(double x) const
-{  
+{
    return (int) ((x - _user_xmin) * _disp_xmax / (_user_xmax - _user_xmin));
 }
 
 int GraphicWindow::user_to_disp_y(double y) const
-{  
-   return (int) ((y - _user_ymin) * _disp_ymax / (_user_ymax - _user_ymin)); 
+{
+   return (int) ((y - _user_ymin) * _disp_ymax / (_user_ymax - _user_ymin));
 }
 
 int GraphicWindow::user_to_disp_dx(double x) const
-{  
+{
    return (int) (x * _disp_xmax / (_user_xmax - _user_xmin));
 }
 
 int GraphicWindow::user_to_disp_dy(double y) const
-{  
+{
    return (int) (y * _disp_ymax / (_user_ymax - _user_ymin));
 }
 
 double GraphicWindow::disp_to_user_x(int x) const
-{  
+{
    return (double)x * (_user_xmax - _user_xmin) / _disp_xmax + _user_xmin;
 }
 
 double GraphicWindow::disp_to_user_y(int y) const
-{  
+{
    return (double)y * (_user_ymax - _user_ymin) / _disp_ymax + _user_ymin;
 }
 
 void GraphicWindow::point(double x, double y)
-{  
+{
    const int POINT_RADIUS = 3;
    int disp_x = user_to_disp_x(x);
    int disp_y = user_to_disp_y(y);
@@ -153,28 +153,28 @@ void GraphicWindow::point(double x, double y)
 }
 
 void GraphicWindow::ellipse(double x, double y, double ra, double rb)
-{  
+{
    int disp_x = user_to_disp_x(x);
    int disp_y = user_to_disp_y(y);
    int disp_rx = abs(user_to_disp_dx(ra));
    int disp_ry = abs(user_to_disp_dy(rb));
 
    XSetForeground(display, xgc, BlackPixel(display, screen_num));
-   XDrawArc(display, win, 
+   XDrawArc(display, win,
       xgc,               // the drawable
       disp_x - disp_rx,  // the x coord of upperleft corner of bounding rect
       disp_y - disp_ry,  // the y coord of upperleft corner of bounding rect
       disp_rx * 2,       // the major axis length
       disp_ry * 2,       // the minor axis length
-      0,                 // offset from 3 o'clock  
+      0,                 // offset from 3 o'clock
       360 * 64);         // complete circle (360 degrees * 64 clicks per degree)
-   XDrawArc(display, _ppm, xgc, disp_x - disp_rx, 
+   XDrawArc(display, _ppm, xgc, disp_x - disp_rx,
    disp_y - disp_ry, disp_rx * 2, disp_ry * 2, 0, 360 * 64);
 }
 
 void GraphicWindow::line(double xfrom, double yfrom, double xto,
-   double yto) 
-{  
+   double yto)
+{
    XSetForeground(display, xgc, BlackPixel(display, screen_num));
    XDrawLine(display, win, xgc, user_to_disp_x(xfrom), user_to_disp_y(yfrom),
       user_to_disp_x(xto), user_to_disp_y(yto));
@@ -183,7 +183,7 @@ void GraphicWindow::line(double xfrom, double yfrom, double xto,
 }
 
 void GraphicWindow::text(const char t[], double x, double y)
-{  
+{
    int direction, ascent, descent;
    XCharStruct overall;
    XTextExtents(_fontinfo_ptr, t, (int)strlen(t), &direction, &ascent, &descent, &overall);
@@ -193,19 +193,19 @@ void GraphicWindow::text(const char t[], double x, double y)
 
    XSetForeground(display, xgc, BlackPixel(display, screen_num));
    XDrawString(display, win, xgc, disp_x, disp_y, t, (int)strlen(t));
-   XDrawString(display, _ppm, xgc, disp_x, disp_y, 
+   XDrawString(display, _ppm, xgc, disp_x, disp_y,
       t, (int)strlen(t));
 }
 
 GraphicWindow& GraphicWindow::operator<<(Point p)
-{  
+{
    point(p.get_x(), p.get_y());
    return *this;
 }
 
 GraphicWindow& GraphicWindow::operator<<(Circle c)
-{  
-   ellipse (c.get_center().get_x(), 
+{
+   ellipse (c.get_center().get_x(),
       c.get_center().get_y(),
       c.get_radius(),
       c.get_radius());
@@ -213,7 +213,7 @@ GraphicWindow& GraphicWindow::operator<<(Circle c)
 }
 
 GraphicWindow& GraphicWindow::operator<<(Message m)
-{  
+{
    _display_string = m.get_text();
    text(_display_string.c_str(), m.get_start().get_x(), m.get_start().get_y());
 
@@ -221,28 +221,28 @@ GraphicWindow& GraphicWindow::operator<<(Message m)
 }
 
 GraphicWindow& GraphicWindow::operator<< (Line l)
-{  
-   line(l.get_start().get_x(), l.get_start().get_y(), 
+{
+   line(l.get_start().get_x(), l.get_start().get_y(),
        l.get_end().get_x(), l.get_end().get_y());
    return *this;
 }
 
 
 void GraphicWindow::statusline_prompt(string s)
-{  
+{
    int direction, ascent, descent;
    XCharStruct overall;
    const char* t = s.c_str();
    XTextExtents(_fontinfo_ptr, t, (int)strlen(t),
       &direction, &ascent, &descent, &overall);
-  
+
    XSetBackground(display, xgc, WhitePixel(display, screen_num));
 
-   XClearArea(display, win, 
+   XClearArea(display, win,
                 0,
                 0, /*clear from top*/
-                0 /*clear to right edge of screen*/, 
-                ascent + descent, 
+                0 /*clear to right edge of screen*/,
+                ascent + descent,
                 0 /* generate exposure events */);
 
    XDrawImageString(display, win, xgc, 0, ascent, t, (int)strlen(t));
@@ -250,12 +250,12 @@ void GraphicWindow::statusline_prompt(string s)
 }
 
 Point GraphicWindow::get_mouse(string outstr)
-{  
+{
    XEvent report;
    Point p;
    int x, y;
 
-   cwin.statusline_prompt(outstr);   
+   cwin.statusline_prompt(outstr);
 
    // Event Loop
    while (true)
@@ -274,28 +274,28 @@ Point GraphicWindow::get_mouse(string outstr)
                y = report.xbutton.y;
                p = Point(cwin.disp_to_user_x(x), cwin.disp_to_user_y(y));
                cwin.statusline_prompt(outstr);
-               return p;               
+               return p;
             }
        }
    }
 
    return p; // to keep compiler happy, will never get here!
 }
-                
+
 
 /***************************************************************************/
 
 int GraphicWindow::put_string(const char instr[], int str_x, int curr_x)
-{  
+{
    int direction, ascent, descent;
    XCharStruct overall;
    XTextExtents(_fontinfo_ptr, instr, (int)strlen(instr), &direction, &ascent, &descent, &overall);
 
-   XClearArea(display, win, 
+   XClearArea(display, win,
       str_x - 1,
       0, /*clear from top*/
-      curr_x + 1, /*clear to right edge of screen*/ 
-      ascent + descent + 1, 
+      curr_x + 1, /*clear to right edge of screen*/
+      ascent + descent + 1,
       0 /* generate exposure events */);
 
    XSetForeground(display, xgc, BlackPixel(display, screen_num));
@@ -309,7 +309,7 @@ int GraphicWindow::put_string(const char instr[], int str_x, int curr_x)
 /***************************************************************************/
 
 string GraphicWindow::get_string(string outstr)
-{  
+{
    XEvent report;
    string instring;
    char instr[50];
@@ -332,12 +332,12 @@ string GraphicWindow::get_string(string outstr)
 
    statusline_prompt(outstr);
 
-   XTextExtents(_fontinfo_ptr, _display_string.c_str(), 
+   XTextExtents(_fontinfo_ptr, _display_string.c_str(),
       (int)_display_string.length(), &direction, &ascent, &descent, &overall);
 
-   str_x = overall.width; 
+   str_x = overall.width;
    curr_x = overall.width;
-   str_y = ascent;   // set initial cursor position 
+   str_y = ascent;   // set initial cursor position
 
    instr[0] = '\0';
    curr_x = put_string(instr, str_x, curr_x);
@@ -354,17 +354,17 @@ string GraphicWindow::get_string(string outstr)
 
          case KeyPress:
             /* get characters until carriage return */
-            count = XLookupString(&(report.xkey), buffer, 
+            count = XLookupString(&(report.xkey), buffer,
                buffsize, &keysym, &compose);
             /* got a carriage return */
             if ((keysym == XK_Return) || (keysym == XK_KP_Enter)
                 || (keysym == XK_Linefeed))
             {
-                 XClearArea(display, win, 
+                 XClearArea(display, win,
                             0,
                             0, /*clear from top*/
-                            0, /*clear to right edge of screen*/ 
-                            ascent + descent + 1, 
+                            0, /*clear to right edge of screen*/
+                            ascent + descent + 1,
                             0 /* generate expoure events */);
 
                  instring = instr;
@@ -388,29 +388,29 @@ string GraphicWindow::get_string(string outstr)
             else if ((keysym == XK_BackSpace) || (keysym == XK_Delete))
             {
                 if ((length = (int)strlen(instr)) > 0)
-                {  
-                   // resize the string 
+                {
+                   // resize the string
                    instr[length-1] = '\0';
                 }
-                else 
+                else
                     XBell(display, 100);
-            }            
+            }
 
-            /* display the new string, and reposition cursor */     
+            /* display the new string, and reposition cursor */
             curr_x = put_string(instr, str_x, curr_x);
       }
    }
    return instring; // never get here but it keeps compiler happy :)!
 }
 
-int GraphicWindow::get_int(const string& out_string) 
-{     
-   return atoi(get_string(out_string).c_str()); 
+int GraphicWindow::get_int(const string& out_string)
+{
+   return atoi(get_string(out_string).c_str());
 }
 
-double GraphicWindow::get_double(const string& out_string) 
-{  
-   return atof(get_string(out_string).c_str()); 
+double GraphicWindow::get_double(const string& out_string)
+{
+   return atof(get_string(out_string).c_str());
 }
 
 #define BITMAPDEPTH 1
@@ -420,11 +420,11 @@ double GraphicWindow::get_double(const string& out_string)
 /***************************************************************************/
 
 int main(int argc, char** argv)
-{  
+{
    // The usual X overhead...
    unsigned int width, height;   // window size
    unsigned int border_width = 4;
-    
+
    char name[4] = {'G','C','T','\0'};
    char* window_name = argv[0];
    char* icon_name = name;
@@ -439,7 +439,7 @@ int main(int argc, char** argv)
    int window_size_ok = 1;
    char* display_name = 0;
    char* progname = argv[0];
-   Window win; 
+   Window win;
    Display* display;
    int screen_num;
 
@@ -447,7 +447,7 @@ int main(int argc, char** argv)
    if (!(size_hints = XAllocSizeHints())
       || !(wm_hints = XAllocWMHints())
       || !(class_hints = XAllocClassHint()))
-   {  
+   {
       cerr << progname << " error: failure allocating memory" << endl;
       exit(-1);
    }
@@ -457,7 +457,7 @@ int main(int argc, char** argv)
    // connect to X server
    display = XOpenDisplay(display_name);
    if (display == NULL)
-   {  
+   {
       cerr << progname << " error: can't connect to server " <<
          XDisplayName(display_name) << endl;
       exit(-1);
@@ -471,15 +471,15 @@ int main(int argc, char** argv)
       screen_num), WhitePixel(display, screen_num));
 
    if (XStringListToTextProperty(&window_name, 1, &windowName) == 0)
-   {  
+   {
       cerr << progname
          << " error: structure allocation for windowName failed."
          << endl;
       exit(-1);
    }
 
-   if (XStringListToTextProperty(&icon_name, 1, &iconName) == 0) 
-   {  
+   if (XStringListToTextProperty(&icon_name, 1, &iconName) == 0)
+   {
       cerr << progname
          << " error: structure allocation for iconName failed."
          << endl;
@@ -517,17 +517,17 @@ int main(int argc, char** argv)
    // Event loop
    int draw_flag = 1;
    while (true)
-   {  
+   {
       XNextEvent(display, &report);
       switch ((int)report.type)
-      {  
+      {
          case Expose:
             if (report.xexpose.count == 0)
-            {  
+            {
                if (window_size_ok)
-               {  
+               {
                   if (draw_flag)
-                  {  
+                  {
                      ccc_win_main();
                      draw_flag = 0;
                   }
@@ -538,10 +538,10 @@ int main(int argc, char** argv)
             break;
 
          case ConfigureNotify:
-            /* 
+            /*
                window has been resized, change width and
                height to send to draw_text and draw_graphics
-               in next Expose 
+               in next Expose
             */
             width = report.xconfigure.width;
             height = report.xconfigure.height;
