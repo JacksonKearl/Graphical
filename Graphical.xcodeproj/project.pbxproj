@@ -1943,11 +1943,7 @@
 					"$(PROJECT_DIR)/Graphical/lib",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				OTHER_LDFLAGS = (
-					"-I/usr/X11R6/include",
-					"-L/usr/X11R6/lib",
-					"-lX11",
-				);
+				OTHER_LDFLAGS = "-lX11";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1965,11 +1961,7 @@
 					"$(PROJECT_DIR)/Graphical/lib",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				OTHER_LDFLAGS = (
-					"-I/usr/X11R6/include",
-					"-L/usr/X11R6/lib",
-					"-lX11",
-				);
+				OTHER_LDFLAGS = "-lX11";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
